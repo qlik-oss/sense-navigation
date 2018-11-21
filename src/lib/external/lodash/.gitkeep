@@ -1,3 +1,0 @@
-# The following files will be copied by sense-go to the ./lib/external/sense-extension-utils directory:
-#
-## node_modules/lodash/lodash.min.js => ./lodash.min.js

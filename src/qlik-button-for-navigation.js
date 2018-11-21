@@ -1,3 +1,10 @@
+/**
+ * @license
+ * Copyright (c) 2015-present, Stefan Walther. All rights reserved.
+ *
+ * Copyrights licensed under the terms of the MIT license.
+ * Original source <https://github.com/stefanwalther/sense-navigation/tree/v1.0>
+ */
 /* global define,window */
 define(
   [
@@ -5,13 +12,10 @@ define(
     './properties',
     './lib/js/helpers',
     'text!./template.ng.html',
-    'css!./lib/css/main.min.css',
-    'css!./lib/external/font-awesome/css/font-awesome.min.css'
+    'css!./lib/css/main.min.css'
   ],
   function (qlik, props, utils, ngTemplate) { // eslint-disable-line max-params
     'use strict';
-
-    var DEBUG = true;
 
     /*
      * Check if running in an iframe.
@@ -35,25 +39,47 @@ define(
 
       definition: props,
       support: {
-        export: true,
+        export: false,
         exportData: false,
         snapshot: false
       },
-      initialProperties: {},
+      initialProperties: {
+        props: {
+          buttonIconSet: 'lui',
+          buttonTextAlign: 'center'
+        }
+      },
       snapshot: {canTakeSnapshot: false},
       template: ngTemplate,
       controller: [
-        '$scope', '$element', function ($scope /* , $element */) { // eslint-disable-line no-unused-vars
+        '$scope', '$element', function ($scope, $element) { // eslint-disable-line no-unused-vars
+
+          function canInteract() {
+            return $scope.object && $scope.object.getInteractionState() === 1;
+          };
+
+          $scope.doClick = function () {
+            if (canInteract()) {
+              $scope.doAction()
+                .then(function () {
+                  $scope.doNavigate();
+                })
+                .catch(function (err) {
+                  window.console.error(err);
+                });
+            }
+          };
+
+          // Ugly workaround for Apple touch devices, iPad etc
+         if( typeof($scope.FirstTime) == "undefined") {
+            $scope.FirstTime = true;
+            var clickHandler = ('ontouchstart' in document.documentElement ? "touchstart" : "click");
+            $element.find('button').bind(clickHandler, $scope.doClick);
+         }
 
           var DELAY_ACTIONS = 100;
 
           $scope.doNavigate = function () {
-
-            if (DEBUG) {
-              window.console.group('DEBUG');
-              window.console.log('navigationAction', $scope.layout.props.navigationAction);
-              window.console.groupEnd();
-            }
 
             switch ($scope.layout.props.navigationAction) {
               case 'gotoSheet':
@@ -72,9 +98,9 @@ define(
                 $scope.nextSheet();
                 break;
               case 'openWebsite':
-                var url = $scope.layout.props.websiteUrl; // eslint-disable-line no-case-declarations
-                var same = $scope.layout.props.sameWindow; // eslint-disable-line no-case-declarations
+                var url = $scope.layout.props.websiteUrl;
                 if (!utils.isEmpty(url)) {
+                  var same = $scope.layout.props.sameWindow;
                   var isIframe = inIframe();
                   var target = '';
                   if (same && isIframe) {
@@ -108,10 +134,6 @@ define(
             }
           };
 
-          $scope.isEditMode = function () {
-            return qlik.navigation.getMode() === qlik.navigation.EDIT;
-          };
-
           /*
            * Executes the actions
            *
@@ -126,7 +148,7 @@ define(
               for (var i = 0; i < $scope.layout.props.actionItems.length; i++) {
 
                 var actionType = $scope.layout.props.actionItems[i].actionType;
-                var fld = (utils.isEmpty($scope.layout.props.actionItems[i].selectedField) || $scope.layout.props.actionItems[i].selectedField === 'by-expr') ? $scope.layout.props.actionItems[i].field : $scope.layout.props.actionItems[i].selectedField;
+                var fld = ( utils.isEmpty($scope.layout.props.actionItems[i].selectedField) || $scope.layout.props.actionItems[i].selectedField === 'by-expr') ? $scope.layout.props.actionItems[i].field : $scope.layout.props.actionItems[i].selectedField;
                 var val = $scope.layout.props.actionItems[i].value;
                 var softLock = $scope.layout.props.actionItems[i].softLock;
                 var bookmark = $scope.layout.props.actionItems[i].selectedBookmark;
@@ -135,112 +157,112 @@ define(
                 var l = actionPromises.length;
 
                 switch (actionType) {
-                  case 'applyBookmark':
+                  case 'applyBookmark': {
                     if (!utils.isEmpty(bookmark)) {
                       actionPromises.push($scope.actions.applyBookmark.bind(this, bookmark));
                     }
-                    break;
-                  case 'back':
+                  } break;
+                  case 'back':{
                     actionPromises.push($scope.actions.back.bind(this));
-                    break;
-                  case 'clearAll':
+                  } break;
+                  case 'clearAll': {
                     actionPromises.push($scope.actions.clearAll.bind(this));
-                    break;
-                  case 'clearField':
+                  } break;
+                  case 'forward':{
+                    actionPromises.push($scope.actions.forward.bind(this));
+                  } break;
+                  case 'lockAll':{
+                    actionPromises.push($scope.actions.lockAll.bind(this));
+                  } break;
+
+
+                  case 'clearField': {
                     if (!utils.isEmpty(fld)) {
                       actionPromises.push($scope.actions.clearField.bind(this, fld));
                     }
-                    break;
-                  case 'clearOther':
-                    actionPromises.push($scope.actions.clearOther.bind(this, fld, softLock));
-                    break;
-                  case 'forward':
-                    actionPromises.push($scope.actions.forward.bind(this));
-                    break;
-                  case 'lockAll':
-                    actionPromises.push($scope.actions.lockAll.bind(this));
-                    break;
-                  case 'lockField':
+                  } break;
+
+                  case 'clearOther': {
+                    if (!utils.isEmpty(fld)) {
+                      actionPromises.push($scope.actions.clearOther.bind(this, fld, softLock));
+                    }
+                  } break;
+
+                  case 'lockField': {
                     if (!utils.isEmpty(fld)) {
                       actionPromises.push($scope.actions.lockField.bind(this, fld));
                     }
-                    break;
-                  case 'selectAll':
+                   } break;
+
+                   case 'unlockField': {
+                    if (!utils.isEmpty(fld)) {
+                      actionPromises.push($scope.actions.unlockField.bind(this, fld));
+                    }
+                  } break;
+                  case 'selectAll':{
                     if (!utils.isEmpty(fld)) {
                       actionPromises.push($scope.actions.selectAll.bind(this, fld, softLock));
                     }
-                    break;
-                  case 'selectAlternative':
+                  } break;
+                  case 'selectAlternative': {
                     if (!utils.isEmpty(fld)) {
                       actionPromises.push($scope.actions.selectAlternative.bind(this, fld, softLock));
                     }
-                    break;
-                  case 'selectAndLockField':
+                  } break;
+                  case 'selectAndLockField': {
                     if (!utils.isEmpty(fld) && (!utils.isEmpty(val))) {
                       actionPromises.push($scope.actions.selectField.bind(this, fld, val));
                       actionPromises.push($scope.actions.wait.bind(null, 100));
                       actionPromises.push($scope.actions.lockField.bind(this, fld));
                     }
-                    break;
-                  case 'selectExcluded':
+                  } break;
+                  case 'selectExcluded': {
                     if (!utils.isEmpty(fld)) {
                       actionPromises.push($scope.actions.selectExcluded.bind(this, fld, softLock));
                     }
-                    break;
-                  case 'selectField':
+                  } break;
+                  case 'selectField': {
                     if (!utils.isEmpty(fld) && (!utils.isEmpty(val))) {
                       actionPromises.push($scope.actions.selectField.bind(this, fld, val));
                     }
-                    break;
-                  case 'selectValues':
+                  } break;
+                  case 'selectValues':{
                     if (!utils.isEmpty(fld) && (!utils.isEmpty(val))) {
                       actionPromises.push($scope.actions.selectValues.bind(this, fld, val));
                     }
-                    break;
-                  case 'selectPossible':
+                  } break;
+                  case 'selectPossible':{
                     if (!utils.isEmpty(fld)) {
                       actionPromises.push($scope.actions.selectPossible.bind(this, fld, softLock));
                     }
-                    break;
-                  case 'setVariable':
-                    if (!utils.isEmpty(variable)) {
-                      actionPromises.push($scope.actions.setVariableContent.bind(this, variable, val));
-                    }
-                    break;
-                  case 'toggleSelect':
+                  } break;
+                  case 'toggleSelect': {
                     if (!utils.isEmpty(fld) && (!utils.isEmpty(val))) {
                       actionPromises.push($scope.actions.toggleSelect.bind(this, fld, val, softLock));
                     }
-                    break;
-                  case 'unlockAll':
+                  } break;
+
+                  case 'setVariable': {
+                    if (!utils.isEmpty(variable)) {
+                      actionPromises.push($scope.actions.setVariableContent.bind(this, variable, val));
+                    }
+                  } break;
+
+                  case 'unlockAll': {
                     actionPromises.push($scope.actions.unlockAll.bind(this));
-                    break;
-                  case 'unlockAllAndClearAll':
+                  } break;
+                  case 'unlockAllAndClearAll': {
                     actionPromises.push($scope.actions.unlockAll.bind(this));
                     actionPromises.push($scope.actions.wait.bind(null, 100));
                     actionPromises.push($scope.actions.clearAll.bind(this));
-                    break;
-                  case 'unlockField':
-                    if (!utils.isEmpty(fld)) {
-                      actionPromises.push($scope.actions.unlockField.bind(this, fld));
-                    }
-                    break;
+                  } break;
+
                   default:
                     break;
                 }
 
                 if (l < actionPromises.length) {
                   actionPromises.push($scope.actions.wait.bind(null, 100));
-                }
-
-                if (DEBUG) {
-                  window.console.group('DEBUG');
-                  window.console.log('actionItems', $scope.layout.props.actionItems);
-                  window.console.log('actionType: ', actionType);
-                  window.console.log('actionPromises', actionPromises);
-                  window.console.log('fld: ', fld);
-                  window.console.log('val: ', val);
-                  window.console.groupEnd();
                 }
               }
 
@@ -252,58 +274,30 @@ define(
             }
           };
 
-          // Helper function to be used in the template, defining the button class.
-          $scope.getButtonClassesBs3 = function (props) {
-
-            var classes = [];
-
-            classes.push('btn');
-            classes.push('btn-sm');
-
-            if (props.buttonTheme === 'by-expr') {
-              classes.push('btn-' + props.buttonStyleExpression.substr(props.buttonStyleExpression.indexOf('-') + 1));
-            } else if (props.buttonStyleBs) {
-              classes.push('btn-' + props.buttonStyleBs);
-            } else {
-              classes.push('btn-default');
+          $scope.getEnableCond = function (props) {
+            if(props.useEnabledCondition){
+              var EC = props.enabledCondition;
+              if (EC == 0) {
+                return true;
+              } else {
+                return false;
+              }
             }
-
-            // Width
-            if (props.fullWidth) {
-              classes.push('full-width');
-            } else {
-              classes.push('auto-width'); // Todo: in case of LUI we could/should use the block style buttons
-            }
-
-            // Multiline
-            if (props.isButtonMultiLine) {
-              classes.push('multiline');
-            }
-
-            return classes.join(' ');
+            return false;
           };
 
-          $scope.getButtonClassesLui = function (props) {
+          $scope.getButtonClasses = function (props) {
             var classes = [];
 
             classes.push('lui-button');
-
-            if (props.buttonTheme === 'by-expr') {
-              classes.push('lui-button--' + props.buttonStyleExpression.substr(props.buttonStyleExpression.indexOf('-') + 1));
-            } else if (props.buttonStyleLui) {
-              classes.push('lui-button--' + props.buttonStyleLui);
-            } else {
-              classes.push('lui-button--default');
-            }
+            classes.push('lui-button--gradient');
 
             if (props.fullWidth) {
               classes.push('full-width');
             } else {
               classes.push('auto-width');
             }
-            if (props.isButtonMultiLine) {
-              classes.push('multiline');
-            }
+
             return classes.join(' ');
           };
 
@@ -323,53 +317,6 @@ define(
                 break;
             }
             return classes.join(' ');
-          };
-
-          $scope.getButtonTheme = function (props) {
-            switch (props.buttonTheme) {
-              case 'lui':
-                return 'lui';
-              case 'bs3':
-                return 'bs3';
-              case 'by-css':
-                return 'by-css';
-              case 'by-expr':
-                return props.buttonStyleExpression.substr(0, props.buttonStyleExpression.indexOf('-'));
-              default:
-                return 'lui';
-            }
-          };
-
-          $scope.getButtonCustomCss = function (props) {
-            if (props.buttonStyle === 'by-css') {
-              return props.buttonStyleCss;
-            }
-            return '';
-          };
-
-          $scope.getButtonClassesCustom = function (props) {
-            var classes = [];
-            if (props.fullWidth) {
-              classes.push('full-width');
-            } else {
-              classes.push('auto-width');
-            }
-            if (props.isButtonMultiLine) {
-              classes.push('multiline');
-            }
-            return classes.join(' ');
-          };
-
-          $scope.go = function () {
-            if (!$scope.isEditMode()) {
-              $scope.doAction()
-                .then(function () {
-                  $scope.doNavigate();
-                })
-                .catch(function (err) {
-                  window.console.error(err);
-                });
-            }
           };
 
           $scope.actions = {
@@ -449,7 +396,7 @@ define(
             wait: function (ms) {
               var waitMs = ms || DELAY_ACTIONS;
               return new qlik.Promise(function (resolve) {
-                var wait = setTimeout(() => {
+                var wait = setTimeout(function () {
                   clearTimeout(wait);
                   resolve();
                 }, waitMs);
@@ -457,6 +404,7 @@ define(
             }
           };
 
+          // Todo(refactor): Move all stuff here, this is much cleaner
           $scope.navigationAction = {};
 
           $scope.firstSheet = function () {
@@ -480,9 +428,11 @@ define(
           };
 
           $scope.gotoSheet = function (sheetId) {
-            var r = qlik.navigation.gotoSheet(sheetId);
-            if (!r.success) {
-              window.console.error(r.errorMsg);
+            if (!utils.isEmpty(sheetId)) {
+              var r = qlik.navigation.gotoSheet(sheetId);
+              if (!r.success) {
+                window.console.error(r.errorMsg);
+              }
             }
           };
 

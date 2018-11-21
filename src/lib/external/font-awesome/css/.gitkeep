@@ -1,3 +1,0 @@
-# The following files will be copied by sense-go to the ./lib/external/sense-extension-utils directory:
-#
-## node_modules/font-awesome/dist/font-awesome.css => ./font-awesome.css

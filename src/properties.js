@@ -1,11 +1,11 @@
 /* global define */
 define([
   'qlik',
-  './lib/external/lodash/lodash.min',
   './lib/js/helpers',
-  'text!./lib/data/icons-fa.json',
   'text!./lib/data/icons-lui.json'
-], function (qlik, __, utils, iconListFa, iconListLui) { // eslint-disable-line max-params
+], function (qlik, utils, iconListLui) { // eslint-disable-line max-params
+
+  'use strict';
 
   // ****************************************************************************************
   // Helper Promises
@@ -25,9 +25,11 @@ define([
         }
       );
     });
-    propDef = __.sortBy(propDef, function (item) {
-      return item.label;
+
+    propDef.sort(function (a, b) {
+      return ('' + a.label).localeCompare(b.label);
     });
+
     propDef.unshift({
       value: '',
       label: '>> No icon <<'
@@ -38,135 +40,6 @@ define([
   // ****************************************************************************************
   // Layout
   // ****************************************************************************************
-  var buttonTheme = {
-    type: 'string',
-    component: 'dropdown',
-    label: 'Button theme',
-    ref: 'props.buttonTheme',
-    options: [
-      {
-        value: 'bs3',
-        label: 'Bootstrap v3'
-      },
-      {
-        value: 'lui',
-        label: 'Leonardo UI'
-      },
-      {
-        value: 'by-expr',
-        label: 'Custom (by expression)'
-      },
-      {
-        value: 'by-css',
-        label: 'Custom (by CSS)'
-      }
-    ],
-    defaultValue: 'lui'
-  };
-
-  var buttonStyleBs = {
-    type: 'string',
-    component: 'dropdown',
-    ref: 'props.buttonStyleBs',
-    label: 'Bootstrap v3 style',
-    defaultValue: 'default',
-    options: [
-      {
-        value: 'default',
-        label: 'Default'
-      },
-      {
-        value: 'primary',
-        label: 'Primary'
-      },
-      {
-        value: 'success',
-        label: 'Success'
-      },
-      {
-        value: 'info',
-        label: 'Info'
-      },
-      {
-        value: 'warning',
-        label: 'Warning'
-      },
-      {
-        value: 'danger',
-        label: 'Danger'
-      },
-      {
-        value: 'link',
-        label: 'Link'
-      }
-    ],
-    show: function (data) {
-      return data.props.buttonTheme === 'bs3';
-    }
-  };
-
-  var buttonStyleLui = {
-    type: 'string',
-    component: 'dropdown',
-    ref: 'props.buttonStyleLui',
-    label: 'Leonardo UI style',
-    defaultValue: 'default',
-    options: [
-      {
-        value: 'default',
-        label: 'Default'
-      },
-      {
-        value: 'toolbar',
-        label: 'Toolbar'
-      },
-      {
-        value: 'success',
-        label: 'Success'
-      },
-      {
-        value: 'info',
-        label: 'Info'
-      },
-      {
-        value: 'warning',
-        label: 'Warning'
-      }
-    ],
-    show: function (data) {
-      return data.props.buttonTheme === 'lui';
-    }
-  };
-
-  var buttonStyleExpression = {
-    ref: 'props.buttonStyleExpression',
-    label: 'Expression to define the button style',
-    type: 'string',
-    expression: 'optional',
-    defaultValue: '=\'lui-default\'',
-    show: function (data) {
-      return data.props.buttonTheme === 'by-expr';
-    }
-  };
-
-  var helpButtonStyleExpression = {
-    text: 'The expression has to return one of the following values: bs3-default, bs3-primary, bs3-success, bs3-info, bs3-warning, bs3-danger, bs3-link, lui-default, lui-toolbar, lui-success, lui-info or lui-warning.',
-    component: 'text',
-    show: function (data) {
-      return data.props.buttonTheme === 'by-expr';
-    }
-  };
-
-  var buttonStyleCss = {
-    ref: 'props.buttonStyleCss',
-    label: 'Expression to define button\'s CSS',
-    type: 'string',
-    expression: 'optional',
-    defaultValue: '=\'background-image: linear-gradient(to right, #FF512F 0%, #F09819 51%, #FF512F 100%)\'',
-    show: function (data) {
-      return data.props.buttonTheme === 'by-css';
-    }
-  };
 
   var buttonWidth = {
     type: 'boolean',
@@ -188,6 +61,39 @@ define([
     defaultValue: false
   };
 
+
+  var conditionalEnable = {
+    type: 'items',
+    label: 'Enable condition',
+    items: {
+      usecondition: {
+        type: 'boolean',
+        component: 'switch',
+        label: 'Use enable condition',
+        ref: 'props.useEnabledCondition',
+        defaultValue: false,
+        options: [{
+          value: true,
+          label: 'On'
+        }, {
+          value: false,
+          label: 'Off'
+        }]
+      },
+      condition: {
+        ref: 'props.enabledCondition',
+        label: 'Enable condition',
+        type: 'integer',
+        defaultValue: 1,
+        expression: 'optional',
+        show: function (data) {
+          return data.props.useEnabledCondition === true;
+        }
+      }
+    }
+  };
+
+
   // ****************************************************************************************
   // Icons
   // ****************************************************************************************
@@ -207,39 +113,6 @@ define([
       }
     ],
     defaultValue: false
-  };
-
-  var buttonIconSet = {
-    type: 'string',
-    component: 'dropdown',
-    label: 'Icon set',
-    ref: 'props.buttonIconSet',
-    options: [
-      {
-        value: 'fa',
-        label: 'Fontawesome Icons'
-      }, {
-        value: 'lui',
-        label: 'Leonardo UI Icons'
-      }
-    ],
-    defaultValue: 'fa',
-    show: function (data) { /* eslint-disable-line object-shorthand */
-      return data.props.buttonShowIcon === true;
-    }
-  };
-
-  var buttonIconsFa = {
-    type: 'string',
-    component: 'dropdown',
-    label: 'Icon (Fontawesome icon-set)',
-    ref: 'props.buttonIconFa',
-    options: function () {
-      return getIcons(iconListFa);
-    },
-    show: function (data) { /* eslint-disable-line object-shorthand */
-      return data.props.buttonShowIcon === true && data.props.buttonIconSet === 'fa';
-    }
   };
 
   var buttonIconsLui = {
@@ -330,13 +203,6 @@ define([
     ]
   };
 
-  var buttonMultiLine = {
-    ref: 'props.isButtonMultiLine',
-    label: 'Multiline label',
-    type: 'boolean',
-    defaultValue: false
-  };
-
   var buttonLabel = {
     ref: 'props.buttonLabel',
     label: 'Label',
@@ -409,17 +275,6 @@ define([
     expression: 'optional',
     show: function (data) {
       return data.props.navigationAction === 'gotoSheetById';
-    }
-  };
-
-  var appList = {
-    type: 'string',
-    component: 'dropdown',
-    label: 'Select app',
-    ref: 'props.selectedApp',
-    options: utils.getAppList(),
-    show: function (data) {
-      return data.props.navigationAction === 'openApp';
     }
   };
 
@@ -572,6 +427,33 @@ define([
     }
   ];
 
+  function getActionLabel(actionType) {
+    if ((typeof actionOptions == "undefined") || (typeof actionType == "undefined")) {
+      return actionType;
+    }
+
+    var n = actionOptions.length;
+    for (var i = 0; i < n; i++) {
+      if (actionOptions[i].value == actionType) {
+        return actionOptions[i].label;
+      }
+    }
+    return actionType;
+  }
+
+  function getActionItemFromId(arr, actionId) {
+    if ((typeof arr == "undefined") || (typeof actionId == "undefined")) {
+      return null;
+    }
+    var n = arr.length;
+    for (var i = 0; i < n; i++) {
+      if (arr[i].cId == actionId) {
+        return arr[i];
+      }
+    }
+    return null;
+  }
+
   // ****************************************************************************************
   // n-actions
   // ****************************************************************************************
@@ -587,8 +469,7 @@ define([
     ref: 'props.actionItems',
     label: 'Actions',
     itemTitleRef: function (data) {
-      var v = __.filter(actionOptions, {value: data.actionType});
-      return (v && v.length > 0) ? v[0].label : data.actionType;
+      return getActionLabel(data.actionType);
     },
     allowAdd: true,
     allowRemove: true,
@@ -610,7 +491,7 @@ define([
         expression: 'optional',
         options: utils.getBookmarkList({}),
         show: function (data, defs) {
-          var def = __.find(defs.layout.props.actionItems, {cId: data.cId});
+          var def = getActionItemFromId(defs.layout.props.actionItems, data.cId);
           return def && bookmarkEnabler.indexOf(def.actionType) > -1;
         }
       },
@@ -630,7 +511,7 @@ define([
           });
         },
         show: function (data, defs) {
-          var def = __.find(defs.layout.props.actionItems, {cId: data.cId});
+          var def = getActionItemFromId(defs.layout.props.actionItems, data.cId);
           return def && fieldEnabler.indexOf(def.actionType) > -1;
         }
       },
@@ -640,7 +521,7 @@ define([
         label: 'Field',
         expression: 'optional',
         show: function (data, defs) {
-          var def = __.find(defs.layout.props.actionItems, {cId: data.cId});
+          var def = getActionItemFromId(defs.layout.props.actionItems, data.cId);
           return def && fieldEnabler.indexOf(def.actionType) > -1 && def.selectedField === 'by-expr';
         }
       },
@@ -650,7 +531,7 @@ define([
         label: 'Variable name',
         expression: 'optional',
         show: function (data, defs) {
-          var def = __.find(defs.layout.props.actionItems, {cId: data.cId});
+          var def = getActionItemFromId(defs.layout.props.actionItems, data.cId);
           return def && variableEnabler.indexOf(def.actionType) > -1;
         }
       },
@@ -660,7 +541,7 @@ define([
         label: 'Value',
         expression: 'optional',
         show: function (data, defs) {
-          var def = __.find(defs.layout.props.actionItems, {cId: data.cId});
+          var def = getActionItemFromId(defs.layout.props.actionItems, data.cId);
           return def && valueEnabler.indexOf(def.actionType) > -1;
         }
       },
@@ -670,7 +551,7 @@ define([
         ref: 'valueDesc',
         label: 'Define multiple values separated with a semi-colon (;).',
         show: function (data, defs) {
-          var def = __.find(defs.layout.props.actionItems, {cId: data.cId});
+          var def = getActionItemFromId(defs.layout.props.actionItems, data.cId);
           return def && valueDescEnabler.indexOf(def.actionType) > -1;
         }
       },
@@ -680,7 +561,7 @@ define([
         label: 'Overwrite locked selections',
         defaultValue: false,
         show: function (data, defs) {
-          var def = __.find(defs.layout.props.actionItems, {cId: data.cId});
+          var def = getActionItemFromId(defs.layout.props.actionItems, data.cId);
           return def && overwriteLockedEnabler.indexOf(def.actionType) > -1;
         }
       }
@@ -699,6 +580,9 @@ define([
             defaultValue: false
           }
         }
+      },
+      selections: {
+        show: false
       }
     }
   };
@@ -715,106 +599,64 @@ define([
           buttonLabel: buttonLabel
         }
       },
-      style: {
-        type: 'items',
-        label: 'Style',
-        items: {
-          buttonTheme: buttonTheme,
-          buttonStyleBs: buttonStyleBs,
-          buttonStyleLui: buttonStyleLui,
-          buttonStyleExpression: buttonStyleExpression,
-          helpButtonStyleExprBs: helpButtonStyleExpression,
-          buttonStyleCss: buttonStyleCss
-        }
-      },
       icons: {
         type: 'items',
         label: 'Icon',
         items: {
           buttonShowIcon: buttonShowIcon,
-          buttonIconTheme: buttonIconSet,
-          buttonIconsFa: buttonIconsFa,
           buttonIconsLui: buttonIconsLui
         }
       },
       alignment: {
         type: 'items',
-        label: 'Size & alignment',
+        label: 'Size and alignment',
         items: {
           buttonWidth: buttonWidth,
           buttonAlignment: buttonAlignment,
-          buttonTextAlign: buttonTextAlign,
-          buttonMultiLine: buttonMultiLine
+          buttonTextAlign: buttonTextAlign
         }
-      }
+      },
+      conditionalEnable: conditionalEnable,
     }
   };
 
   var sectionNavigationAndActions = {
     type: 'items',
     component: 'expandable-items',
-    label: 'Navigation & actions',
+    label: 'Actions and navigation',
     items: {
       actionsList: actionsList,
       navigationBehavior: {
         type: 'items',
-        label: 'Navigation behavior',
+        label: 'Navigation',
         items: {
           action: navigationAction,
           sheetId: sheetId,
           sheetList: sheetList,
           storyList: storyList,
           websiteUrl: websiteUrl,
-          sameWindow: sameWindow,
-          appList: appList
-        }
-      }
-    }
-  };
-
-  // Note for the extension certification process:
-  //   Using the calculation condition is not officially supported!
-  //   But seems to work well and using it is of low risk.
-  var sectionAddOns = {
-    type: 'items',
-    component: 'expandable-items',
-    translation: 'properties.addons',
-    items: {
-      dataHandling: {
-        uses: 'dataHandling',
-        items: {
-          suppressZero: null
+          sameWindow: sameWindow
         }
       }
     }
   };
 
   var sectionAbout = {
-    type: 'items',
-    component: 'expandable-items',
+    component: 'items',
     label: 'About',
     items: {
-      about: {
-        label: 'About this extension',
-        items: {
-          one: {
-            label: 'sense-navigation brings the support to extend your Qlik Sense app with various navigation options (including actions).',
-            component: 'text'
-          },
-          two: {
-            label: 'For further information go here:',
-            component: 'text'
-          },
-          three: {
-            url: 'https://github.com/stefanwalther/sense-navigation',
-            label: 'Documentation & Source',
-            component: 'link'
-          },
-          four: {
-            label: 'Current version: @@pkg.version',
-            component: 'text'
-          }
-        }
+      header: {
+        label: 'Button for navigation',
+        style: 'header',
+        component: 'text'
+      },
+      paragraph1: {
+        label: 'A button that allows an app developer to pre-define navigation and selection actions.',
+        component: 'text'
+      },
+      paragraph2: {
+        label: 'Button for navigation is based upon an extension created by Stefan Walther at QlikTech International AB.',
+        component: 'text'
       }
     }
   };
@@ -829,11 +671,7 @@ define([
       sectionAppearance: sectionAppearance,
       sectionButtonLayout: sectionButtonLayout,
       sectionNavigationAndActions: sectionNavigationAndActions,
-      sectionAddOns: sectionAddOns,
       sectionAbout: sectionAbout
-    },
-    __test_only__: {
-      getIcons: getIcons
     }
   };
 });

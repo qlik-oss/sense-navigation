@@ -1,40 +1,13 @@
 <div qv-extension
      class="container {{layout.props.buttonAlignment}}">
 
-  <!-- Bootstrap v3 buttons -->
-  <div ng-if="getButtonTheme(layout.props) === 'bs3'"
-       style="text-align: {{layout.props.buttonTextAlign}};"
-       ng-class="getButtonClassesBs3(layout.props)"
-       ng-click="go();"
-       title="{{layout.props.buttonLabel}}">
-    <span ng-if="layout.props.buttonShowIcon === true"
-       ng-class="getIconClasses(layout.props)"
-       style="padding-right:5px;"></span>{{layout.props.buttonLabel}}
-  </div>
-  <!-- (Bootstrap v3 buttons) -->
-
-  <!-- Lui Button -->
-  <div ng-if="getButtonTheme(layout.props) === 'lui'"
-       ng-class="getButtonClassesLui(layout.props)"
-       style="text-align: {{layout.props.buttonTextAlign}};"
-       ng-click="go();"
-       title="{{layout.props.buttonLabel}}">
-    <span ng-if="layout.props.buttonShowIcon === true"
-       ng-class="getIconClasses(layout.props)"
-          style="padding-right:5px;"></span><span>{{layout.props.buttonLabel}}</span>
-  </div>
-  <!-- (Lui Button) -->
-
-  <!-- Custom CSS Button -->
-  <div ng-if="getButtonTheme(layout.props) === 'by-css'"
-       class="btn btn-sm btn-default"
-       style="text-align: {{layout.props.buttonTextAlign}}; {{getButtonCustomCss(layout.props)}}"
-       ng-class="getButtonClassesCustom(layout.props)"
-       ng-click="go();"
-       title="{{layout.props.buttonLabel}}">
-    <span ng-if="layout.props.buttonShowIcon === true"
-          ng-class="getIconClasses(layout.props)"
-          style="padding-right:5px;"></span><span>{{layout.props.buttonLabel}}</span>
-  </div>
-  <!-- (Custom CSS Button -->
+     <button ng-class="getButtonClasses(layout.props)"
+     style="text-align: {{layout.props.buttonTextAlign}};"
+     ng-disabled="getEnableCond(layout.props)"
+     >
+     <span ng-if="layout.props.buttonShowIcon === true"
+     ng-class="getIconClasses(layout.props)"
+        style="padding-right:5px;"></span>
+        <span>{{layout.props.buttonLabel}}</span>
+</button>
 </div>
