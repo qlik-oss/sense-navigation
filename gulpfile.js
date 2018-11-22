@@ -63,7 +63,7 @@ gulp.task('less', function () {
     }))
     .pipe(cssnano())
     .pipe(concat('main.min.css'))
-    .pipe(gulp.dest(DIST + '/css'));
+    .pipe(gulp.dest(DIST + '/lib/css'));
 });
 
 gulp.task('clean', function (ready) {
@@ -73,7 +73,11 @@ gulp.task('clean', function (ready) {
 });
 
 gulp.task('build', ['clean', 'qext', 'less'], function () {
-  gulp.src([SRC + '/**/*.json', SRC + '/**/*.png'])
+  gulp.src([
+    SRC + '/**/*.json',
+    SRC + '/**/*.png',
+    SRC + '/**/*.ng.html'
+  ])
     .pipe(gulp.dest(DIST));
   return gulp.src(SRC + '/**/*.js')
     .pipe(uglify())
@@ -92,8 +96,14 @@ gulp.task('debug', ['clean', 'qext'], function () {
   gulp.src(SRC + '/lib/less/main.less')
     .pipe(less())
     .pipe(concat('main.min.css'))
-    .pipe(gulp.dest(DIST + '/css'));
-  return gulp.src([SRC + '/**/*.json', SRC + '/**/*.png', SRC + '/**/*.js', DIST + '/**/*.qext'])
+    .pipe(gulp.dest(DIST + '/lib/css'));
+  return gulp.src([
+    SRC + '/**/*.json',
+    SRC + '/**/*.png',
+    SRC + '/**/*.ng.html',
+    SRC + '/**/*.js',
+    DIST + '/**/*.qext'
+  ])
     .pipe(gulp.dest(DIST));
 });
 
