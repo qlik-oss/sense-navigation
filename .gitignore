@@ -9,6 +9,7 @@ todos.md
 build/dev/
 build/release/
 coverage/
+dist/
 
 test/e2e/__artifacts__/chrome*.*
 test/e2e/__artifacts__/diff

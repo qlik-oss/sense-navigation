@@ -56,7 +56,7 @@ define(
 
           function canInteract() {
             return $scope.object && $scope.object.getInteractionState() === 1;
-          };
+          }
 
           $scope.doClick = function () {
             if (canInteract()) {
@@ -71,11 +71,11 @@ define(
           };
 
           // Ugly workaround for Apple touch devices, iPad etc
-         if( typeof($scope.FirstTime) == "undefined") {
+          if (typeof ($scope.FirstTime) === 'undefined') {
             $scope.FirstTime = true;
-            var clickHandler = ('ontouchstart' in document.documentElement ? "touchstart" : "click");
+            var clickHandler = ('ontouchstart' in document.documentElement ? 'touchstart' : 'click');
             $element.find('button').bind(clickHandler, $scope.doClick);
-         }
+          }
 
           var DELAY_ACTIONS = 100;
 
@@ -148,7 +148,7 @@ define(
               for (var i = 0; i < $scope.layout.props.actionItems.length; i++) {
 
                 var actionType = $scope.layout.props.actionItems[i].actionType;
-                var fld = ( utils.isEmpty($scope.layout.props.actionItems[i].selectedField) || $scope.layout.props.actionItems[i].selectedField === 'by-expr') ? $scope.layout.props.actionItems[i].field : $scope.layout.props.actionItems[i].selectedField;
+                var fld = (utils.isEmpty($scope.layout.props.actionItems[i].selectedField) || $scope.layout.props.actionItems[i].selectedField === 'by-expr') ? $scope.layout.props.actionItems[i].field : $scope.layout.props.actionItems[i].selectedField;
                 var val = $scope.layout.props.actionItems[i].value;
                 var softLock = $scope.layout.props.actionItems[i].softLock;
                 var bookmark = $scope.layout.props.actionItems[i].selectedBookmark;
@@ -157,105 +157,98 @@ define(
                 var l = actionPromises.length;
 
                 switch (actionType) {
-                  case 'applyBookmark': {
+                  case 'applyBookmark':
                     if (!utils.isEmpty(bookmark)) {
                       actionPromises.push($scope.actions.applyBookmark.bind(this, bookmark));
                     }
-                  } break;
-                  case 'back':{
+                    break;
+                  case 'back':
                     actionPromises.push($scope.actions.back.bind(this));
-                  } break;
-                  case 'clearAll': {
+                    break;
+                  case 'clearAll':
                     actionPromises.push($scope.actions.clearAll.bind(this));
-                  } break;
-                  case 'forward':{
+                    break;
+                  case 'forward':
                     actionPromises.push($scope.actions.forward.bind(this));
-                  } break;
-                  case 'lockAll':{
+                    break;
+                  case 'lockAll':
                     actionPromises.push($scope.actions.lockAll.bind(this));
-                  } break;
-
-
-                  case 'clearField': {
+                    break;
+                  case 'clearField':
                     if (!utils.isEmpty(fld)) {
                       actionPromises.push($scope.actions.clearField.bind(this, fld));
                     }
-                  } break;
-
-                  case 'clearOther': {
+                    break;
+                  case 'clearOther':
                     if (!utils.isEmpty(fld)) {
                       actionPromises.push($scope.actions.clearOther.bind(this, fld, softLock));
                     }
-                  } break;
-
-                  case 'lockField': {
+                    break;
+                  case 'lockField':
                     if (!utils.isEmpty(fld)) {
                       actionPromises.push($scope.actions.lockField.bind(this, fld));
                     }
-                   } break;
-
-                   case 'unlockField': {
+                    break;
+                  case 'unlockField':
                     if (!utils.isEmpty(fld)) {
                       actionPromises.push($scope.actions.unlockField.bind(this, fld));
                     }
-                  } break;
-                  case 'selectAll':{
+                    break;
+                  case 'selectAll':
                     if (!utils.isEmpty(fld)) {
                       actionPromises.push($scope.actions.selectAll.bind(this, fld, softLock));
                     }
-                  } break;
-                  case 'selectAlternative': {
+                    break;
+                  case 'selectAlternative':
                     if (!utils.isEmpty(fld)) {
                       actionPromises.push($scope.actions.selectAlternative.bind(this, fld, softLock));
                     }
-                  } break;
-                  case 'selectAndLockField': {
+                    break;
+                  case 'selectAndLockField':
                     if (!utils.isEmpty(fld) && (!utils.isEmpty(val))) {
                       actionPromises.push($scope.actions.selectField.bind(this, fld, val));
                       actionPromises.push($scope.actions.wait.bind(null, 100));
                       actionPromises.push($scope.actions.lockField.bind(this, fld));
                     }
-                  } break;
-                  case 'selectExcluded': {
+                    break;
+                  case 'selectExcluded':
                     if (!utils.isEmpty(fld)) {
                       actionPromises.push($scope.actions.selectExcluded.bind(this, fld, softLock));
                     }
-                  } break;
-                  case 'selectField': {
+                    break;
+                  case 'selectField':
                     if (!utils.isEmpty(fld) && (!utils.isEmpty(val))) {
                       actionPromises.push($scope.actions.selectField.bind(this, fld, val));
                     }
-                  } break;
-                  case 'selectValues':{
+                    break;
+                  case 'selectValues':
                     if (!utils.isEmpty(fld) && (!utils.isEmpty(val))) {
                       actionPromises.push($scope.actions.selectValues.bind(this, fld, val));
                     }
-                  } break;
-                  case 'selectPossible':{
+                    break;
+                  case 'selectPossible':
                     if (!utils.isEmpty(fld)) {
                       actionPromises.push($scope.actions.selectPossible.bind(this, fld, softLock));
                     }
-                  } break;
-                  case 'toggleSelect': {
+                    break;
+                  case 'toggleSelect':
                     if (!utils.isEmpty(fld) && (!utils.isEmpty(val))) {
                       actionPromises.push($scope.actions.toggleSelect.bind(this, fld, val, softLock));
                     }
-                  } break;
-
-                  case 'setVariable': {
+                    break;
+                  case 'setVariable':
                     if (!utils.isEmpty(variable)) {
                       actionPromises.push($scope.actions.setVariableContent.bind(this, variable, val));
                     }
-                  } break;
-
-                  case 'unlockAll': {
+                    break;
+                  case 'unlockAll':
                     actionPromises.push($scope.actions.unlockAll.bind(this));
-                  } break;
-                  case 'unlockAllAndClearAll': {
+                    break;
+                  case 'unlockAllAndClearAll':
                     actionPromises.push($scope.actions.unlockAll.bind(this));
                     actionPromises.push($scope.actions.wait.bind(null, 100));
                     actionPromises.push($scope.actions.clearAll.bind(this));
-                  } break;
+                    break;
 
                   default:
                     break;
@@ -275,12 +268,10 @@ define(
           };
 
           $scope.getEnableCond = function (props) {
-            if(props.useEnabledCondition){
+            if (props.useEnabledCondition) {
               var EC = props.enabledCondition;
-              if (EC == 0) {
+              if (EC === 0) {
                 return true;
-              } else {
-                return false;
               }
             }
             return false;

@@ -61,7 +61,6 @@ define([
     defaultValue: false
   };
 
-
   var conditionalEnable = {
     type: 'items',
     label: 'Enable condition',
@@ -92,7 +91,6 @@ define([
       }
     }
   };
-
 
   // ****************************************************************************************
   // Icons
@@ -428,13 +426,13 @@ define([
   ];
 
   function getActionLabel(actionType) {
-    if ((typeof actionOptions == "undefined") || (typeof actionType == "undefined")) {
+    if ((typeof actionOptions === 'undefined') || (typeof actionType === 'undefined')) {
       return actionType;
     }
 
     var n = actionOptions.length;
     for (var i = 0; i < n; i++) {
-      if (actionOptions[i].value == actionType) {
+      if (actionOptions[i].value === actionType) {
         return actionOptions[i].label;
       }
     }
@@ -442,12 +440,12 @@ define([
   }
 
   function getActionItemFromId(arr, actionId) {
-    if ((typeof arr == "undefined") || (typeof actionId == "undefined")) {
+    if ((typeof arr === 'undefined') || (typeof actionId === 'undefined')) {
       return null;
     }
     var n = arr.length;
     for (var i = 0; i < n; i++) {
-      if (arr[i].cId == actionId) {
+      if (arr[i].cId === actionId) {
         return arr[i];
       }
     }
@@ -616,7 +614,7 @@ define([
           buttonTextAlign: buttonTextAlign
         }
       },
-      conditionalEnable: conditionalEnable,
+      conditionalEnable: conditionalEnable
     }
   };
 
