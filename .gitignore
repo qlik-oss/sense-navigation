@@ -6,8 +6,6 @@ todos.md
 .tmp/
 .sense-go.local.yml
 /example/Search
-build/dev/
-build/release/
 coverage/
 dist/
 
