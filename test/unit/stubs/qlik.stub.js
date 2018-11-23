@@ -19,6 +19,13 @@ define([], function () {
           return Promise.resolve();
         }
       };
+    },
+    Promise: {
+      defer: function () {
+        return {
+          promise: function () {}
+        };
+      }
     }
   };
 });

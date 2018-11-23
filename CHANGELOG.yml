@@ -1,3 +1,16 @@
+- version: "2.0.1"
+  date: "2018-11-23"
+    changes:
+      - "Updated circleci config to use zip artifact in build"
+- version: "2.0.0"
+  date: "2018-11-23"
+    changes:
+      - "Breaking change, renamed extesion to qlik-button-for-navigation"
+      - "Updated build setup using gulp"
+      - "Updated circleci setup"
+      - "Apply code changes from DEB repo, alot of styling functionality removed"
+      - "Updated readme to reflect changes"
+      - "Auto release when tagging new version"
 - version: "1.0.0"
   date: "2018-10-09"
   changes:

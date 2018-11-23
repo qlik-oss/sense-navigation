@@ -1,10 +1,10 @@
 {
-  "babel": {
-    "presets": ["es2015"],
-    "env": {
-      "test": {
-        "plugins": ["istanbul"]
-      }
-    }
-  }
+  "presets": ["es2015"],
+  "env": {
+		"test": {
+			"presets": [
+				["es2015"]
+			]
+		}
+	}
 }
