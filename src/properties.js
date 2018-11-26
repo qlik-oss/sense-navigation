@@ -281,7 +281,9 @@ define([
     component: 'dropdown',
     label: 'Select sheet',
     ref: 'props.selectedSheet',
-    options: utils.getPPList({listType: 'sheet', sortBy: 'title'}),
+    options: function() {
+      return utils.getPPList({listType: 'sheet', sortBy: 'title'});
+    },
     show: function (data) {
       return data.props.navigationAction === 'gotoSheet';
     }
@@ -292,7 +294,9 @@ define([
     component: 'dropdown',
     label: 'Select story',
     ref: 'props.selectedStory',
-    options: utils.getPPList({listType: 'story', sortBy: 'title'}),
+    options: function() {
+      return utils.getPPList({listType: 'story', sortBy: 'title'});
+    },
     show: function (data) {
       return data.props.navigationAction === 'gotoStory';
     }
@@ -487,7 +491,9 @@ define([
         component: 'dropdown',
         label: 'Select bookmark',
         expression: 'optional',
-        options: utils.getBookmarkList({}),
+        options: function() {
+          return utils.getBookmarkList({});
+        },
         show: function (data, defs) {
           var def = getActionItemFromId(defs.layout.props.actionItems, data.cId);
           return def && bookmarkEnabler.indexOf(def.actionType) > -1;
