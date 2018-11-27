@@ -152,7 +152,7 @@ define(['qlik'], function (qlik) {
         defer.resolve(items.qBookmarkList.qItems.map(function (item) {
           return {
             value: item.qInfo.qId,
-            label: item.qData.title
+            label: item.qData.title.length > 50 ? item.qData.title.slice(0, 50) + '...' : item.qData.title,
           };
         }));
       });
@@ -178,7 +178,7 @@ define(['qlik'], function (qlik) {
         defer.resolve(items.qFieldList.qItems.map(function (item) {
           return {
             value: item.qName,
-            label: item.qName
+            label: item.qName.length > 50 ? item.qName.slice(0, 50) + '...' : item.qName,
           };
         }));
       });
@@ -208,7 +208,7 @@ define(['qlik'], function (qlik) {
           sortedData.forEach(function (item) {
             sheets.push({
               value: item.qInfo.qId,
-              label: item.qMeta.title
+              label: item.qMeta.title.length > 50 ? item.qMeta.title.slice(0, 50) + '...' : item.qMeta.title,
             });
           });
           return defer.resolve(sheets);
