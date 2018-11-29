@@ -24,6 +24,8 @@ jobs:
           root: ~/qlik-button-for-navigation
           paths:
             - dist
+      - store_artifacts:
+          path: dist
   release:
     <<: *defaults
     steps:
