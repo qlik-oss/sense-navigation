@@ -18,7 +18,7 @@ gulp.task('qext', function () {
     description: pkg.description,
     version: pkg.version,
     icon: 'align-object-center',
-    preview: 'preview.png',
+    preview: 'qlik-button-for-navigation.png',
     keywords: pkg.keywords,
     author: pkg.author,
     homepage: pkg.homepage,
