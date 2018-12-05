@@ -582,7 +582,10 @@ define([
         items: {
           showTitles: {
             defaultValue: false
-          }
+          },
+          details: {
+						show: false
+					}
         }
       }
     }
