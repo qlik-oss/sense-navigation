@@ -584,9 +584,6 @@ define([
             defaultValue: false
           }
         }
-      },
-      selections: {
-        show: false
       }
     }
   };

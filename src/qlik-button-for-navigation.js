@@ -148,6 +148,7 @@ define(
               for (var i = 0; i < $scope.layout.props.actionItems.length; i++) {
 
                 var actionType = $scope.layout.props.actionItems[i].actionType;
+                var state = $scope.layout.qStateName;
                 var fld = (utils.isEmpty($scope.layout.props.actionItems[i].selectedField) || $scope.layout.props.actionItems[i].selectedField === 'by-expr') ? $scope.layout.props.actionItems[i].field : $scope.layout.props.actionItems[i].selectedField;
                 var val = $scope.layout.props.actionItems[i].value;
                 var softLock = $scope.layout.props.actionItems[i].softLock;
@@ -166,74 +167,74 @@ define(
                     actionPromises.push($scope.actions.back.bind(this));
                     break;
                   case 'clearAll':
-                    actionPromises.push($scope.actions.clearAll.bind(this));
+                    actionPromises.push($scope.actions.clearAll.bind(this, state));
                     break;
                   case 'forward':
                     actionPromises.push($scope.actions.forward.bind(this));
                     break;
                   case 'lockAll':
-                    actionPromises.push($scope.actions.lockAll.bind(this));
+                    actionPromises.push($scope.actions.lockAll.bind(this, state));
                     break;
                   case 'clearField':
                     if (!utils.isEmpty(fld)) {
-                      actionPromises.push($scope.actions.clearField.bind(this, fld));
+                      actionPromises.push($scope.actions.clearField.bind(this, fld, state));
                     }
                     break;
                   case 'clearOther':
                     if (!utils.isEmpty(fld)) {
-                      actionPromises.push($scope.actions.clearOther.bind(this, fld, softLock));
+                      actionPromises.push($scope.actions.clearOther.bind(this, fld, state, softLock));
                     }
                     break;
                   case 'lockField':
                     if (!utils.isEmpty(fld)) {
-                      actionPromises.push($scope.actions.lockField.bind(this, fld));
+                      actionPromises.push($scope.actions.lockField.bind(this, fld, state));
                     }
                     break;
                   case 'unlockField':
                     if (!utils.isEmpty(fld)) {
-                      actionPromises.push($scope.actions.unlockField.bind(this, fld));
+                      actionPromises.push($scope.actions.unlockField.bind(this, fld, state));
                     }
                     break;
                   case 'selectAll':
                     if (!utils.isEmpty(fld)) {
-                      actionPromises.push($scope.actions.selectAll.bind(this, fld, softLock));
+                      actionPromises.push($scope.actions.selectAll.bind(this, fld, state, softLock));
                     }
                     break;
                   case 'selectAlternative':
                     if (!utils.isEmpty(fld)) {
-                      actionPromises.push($scope.actions.selectAlternative.bind(this, fld, softLock));
+                      actionPromises.push($scope.actions.selectAlternative.bind(this, fld, state, softLock));
                     }
                     break;
                   case 'selectAndLockField':
                     if (!utils.isEmpty(fld) && (!utils.isEmpty(val))) {
-                      actionPromises.push($scope.actions.selectField.bind(this, fld, val));
+                      actionPromises.push($scope.actions.selectField.bind(this, fld, state, val));
                       actionPromises.push($scope.actions.wait.bind(null, 100));
-                      actionPromises.push($scope.actions.lockField.bind(this, fld));
+                      actionPromises.push($scope.actions.lockField.bind(this, fld, state));
                     }
                     break;
                   case 'selectExcluded':
                     if (!utils.isEmpty(fld)) {
-                      actionPromises.push($scope.actions.selectExcluded.bind(this, fld, softLock));
+                      actionPromises.push($scope.actions.selectExcluded.bind(this, fld, state, softLock));
                     }
                     break;
                   case 'selectField':
                     if (!utils.isEmpty(fld) && (!utils.isEmpty(val))) {
-                      actionPromises.push($scope.actions.selectField.bind(this, fld, val));
+                      actionPromises.push($scope.actions.selectField.bind(this, fld, state, val));
                     }
                     break;
                   case 'selectValues':
                     if (!utils.isEmpty(fld) && (!utils.isEmpty(val))) {
-                      actionPromises.push($scope.actions.selectValues.bind(this, fld, val));
+                      actionPromises.push($scope.actions.selectValues.bind(this, fld, state, val));
                     }
                     break;
                   case 'selectPossible':
                     if (!utils.isEmpty(fld)) {
-                      actionPromises.push($scope.actions.selectPossible.bind(this, fld, softLock));
+                      actionPromises.push($scope.actions.selectPossible.bind(this, fld, state, softLock));
                     }
                     break;
                   case 'toggleSelect':
                     if (!utils.isEmpty(fld) && (!utils.isEmpty(val))) {
-                      actionPromises.push($scope.actions.toggleSelect.bind(this, fld, val, softLock));
+                      actionPromises.push($scope.actions.toggleSelect.bind(this, fld, state, val, softLock));
                     }
                     break;
                   case 'setVariable':
@@ -242,12 +243,12 @@ define(
                     }
                     break;
                   case 'unlockAll':
-                    actionPromises.push($scope.actions.unlockAll.bind(this));
+                    actionPromises.push($scope.actions.unlockAll.bind(this, state));
                     break;
                   case 'unlockAllAndClearAll':
-                    actionPromises.push($scope.actions.unlockAll.bind(this));
+                    actionPromises.push($scope.actions.unlockAll.bind(this, state));
                     actionPromises.push($scope.actions.wait.bind(null, 100));
-                    actionPromises.push($scope.actions.clearAll.bind(this));
+                    actionPromises.push($scope.actions.clearAll.bind(this, state));
                     break;
 
                   default:
@@ -319,70 +320,70 @@ define(
               var cApp = qlik.currApp();
               return cApp.back();
             },
-            clearAll: function () {
+            clearAll: function (state) {
               var cApp = qlik.currApp();
-              return cApp.clearAll();
+              return cApp.clearAll(null, state);
             },
-            clearField: function (field) {
+            clearField: function (field, state) {
               var cApp = qlik.currApp();
-              return cApp.field(field).clear();
+              return cApp.field(field, state).clear();
             },
-            clearOther: function (field, softLock) {
+            clearOther: function (field, state, softLock) {
               var cApp = qlik.currApp();
-              return cApp.field(field).clearOther(softLock);
+              return cApp.field(field, state).clearOther(softLock);
             },
             forward: function () {
               var cApp = qlik.currApp();
               return cApp.forward();
             },
-            lockAll: function () {
+            lockAll: function (state) {
               var cApp = qlik.currApp();
-              return cApp.lockAll();
+              return cApp.lockAll(state);
             },
-            lockField: function (field) {
+            lockField: function (field, state) {
               var cApp = qlik.currApp();
-              return cApp.field(field).lock();
+              return cApp.field(field, state).lock();
             },
-            selectAll: function (field, softLock) {
+            selectAll: function (field, state, softLock) {
               var cApp = qlik.currApp();
-              return cApp.field(field).selectAll(softLock);
+              return cApp.field(field, state).selectAll(softLock);
             },
-            selectAlternative: function (field, softLock) {
+            selectAlternative: function (field, state, softLock) {
               var cApp = qlik.currApp();
-              return cApp.field(field).selectAlternative(softLock);
+              return cApp.field(field, state).selectAlternative(softLock);
             },
-            selectExcluded: function (field, softLock) {
+            selectExcluded: function (field, state, softLock) {
               var cApp = qlik.currApp();
-              return cApp.field(field).selectExcluded(softLock);
+              return cApp.field(field, state).selectExcluded(softLock);
             },
-            selectField: function (field, value) {
+            selectField: function (field, state, value) {
               var cApp = qlik.currApp();
-              return cApp.field(field).selectMatch(value, false);
+              return cApp.field(field, state).selectMatch(value, false);
             },
-            selectPossible: function (field, softLock) {
+            selectPossible: function (field, state, softLock) {
               var cApp = qlik.currApp();
-              return cApp.field(field).selectPossible(softLock);
+              return cApp.field(field, state).selectPossible(softLock);
             },
-            selectValues: function (field, values) {
+            selectValues: function (field, state, values) {
               var cApp = qlik.currApp();
               var valsToSelect = utils.splitToStringNum(values, ';');
-              return cApp.field(field).selectValues(valsToSelect, false);
+              return cApp.field(field, state).selectValues(valsToSelect, false);
             },
             setVariableContent: function (varName, varVal) {
               var cApp = qlik.currApp();
               return cApp.variable.setContent(varName, varVal);
             },
-            toggleSelect: function (field, value, softLock) {
+            toggleSelect: function (field, state, value, softLock) {
               var cApp = qlik.currApp();
-              return cApp.field(field).toggleSelect(value, softLock);
+              return cApp.field(field, state).toggleSelect(value, softLock);
             },
-            unlockAll: function () {
+            unlockAll: function (state) {
               var cApp = qlik.currApp();
-              return cApp.unlockAll();
+              return cApp.unlockAll(state);
             },
-            unlockField: function (field) {
+            unlockField: function (field, state) {
               var cApp = qlik.currApp();
-              return cApp.field(field).unlock();
+              return cApp.field(field, state).unlock();
             },
             wait: function (ms) {
               var waitMs = ms || DELAY_ACTIONS;
