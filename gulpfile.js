@@ -74,9 +74,9 @@ gulp.task('clean', function (ready) {
 
 gulp.task('build', ['clean', 'qext', 'less'], function () {
   gulp.src([
+    SRC + '/**/*.ng.html',
     SRC + '/**/*.json',
     SRC + '/**/*.png',
-    SRC + '/**/*.ng.html'
   ])
     .pipe(gulp.dest(DIST));
   return gulp.src(SRC + '/**/*.js')
