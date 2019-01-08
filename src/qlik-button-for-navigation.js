@@ -12,9 +12,11 @@ define(
     './properties',
     './lib/js/helpers',
     'text!./template.ng.html',
+    'text!./popup-editunavailable.ng.html',
+    "qvangular",
     'css!./lib/css/main.min.css'
   ],
-  function (qlik, props, utils, ngTemplate) { // eslint-disable-line max-params
+  function (qlik, props, utils, ngTemplate, popupNoEdit, qvangular) { // eslint-disable-line max-params
     'use strict';
 
     /*
@@ -124,9 +126,17 @@ define(
               // 	break;
               // eslint-enable capitalized-comments
               case 'switchToEdit':
-                var result = qlik.navigation.setMode(qlik.navigation.EDIT); // eslint-disable-line no-case-declarations
-                if (!result.success) {
-                  window.console.error(result.errorMsg);
+                if (qlik.navigation.isModeAllowed(qlik.navigation.EDIT)) {
+                  var result = qlik.navigation.setMode(qlik.navigation.EDIT); // eslint-disable-line no-case-declarations
+                  if (!result.success) {
+                    window.console.error(result.errorMsg);
+                  }
+                } else {
+                  qvangular.getService("luiDialog").show({
+                    template: popupNoEdit,
+                    closeOnEscape: true,
+                    closeOnOutside: true,
+                  });
                 }
                 break;
               default:
