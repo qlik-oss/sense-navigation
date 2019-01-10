@@ -3,6 +3,7 @@ var gulp = require('gulp');
 var cssnano = require('gulp-cssnano');
 var gutil = require('gulp-util');
 var uglify = require('gulp-uglify');
+var saveLicense = require('uglify-save-license');
 var pkg = require('./package.json');
 var concat = require('gulp-concat');
 var less = require('gulp-less');
@@ -80,7 +81,11 @@ gulp.task('build', ['clean', 'qext', 'less'], function () {
   ])
     .pipe(gulp.dest(DIST));
   return gulp.src(SRC + '/**/*.js')
-    .pipe(uglify())
+    .pipe(uglify({
+      output: {
+        comments: saveLicense
+      }
+    }))
     .pipe(gulp.dest(DIST));
 });
 
