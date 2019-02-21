@@ -1,5 +1,5 @@
 /* global define */
-define(['qlik'], function (qlik) {
+define(['qlik', 'encoder'], function (qlik, encoder) {
 
   var Utils = {
 
@@ -25,6 +25,7 @@ define(['qlik'], function (qlik) {
      * @returns {string} - The fixed url.
      */
     fixUrl: function (url) {
+      url = encoder.encodeForHref(url);
       if (url.startsWith('http://') || url.startsWith('https://') || (url.startsWith('mailto://'))) {
         return url;
       }
