@@ -26,7 +26,7 @@ define(['qlik', 'encoder'], function (qlik, encoder) {
      */
     fixUrl: function (url) {
       url = encoder.encodeForHref(url);
-      if (url.startsWith('http://') || url.startsWith('https://') || (url.startsWith('mailto://'))) {
+      if (/(https?|mailto):\/\//.test(url)) {
         return url;
       }
       return 'http://' + url;
