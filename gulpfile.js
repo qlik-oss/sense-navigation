@@ -11,13 +11,14 @@ var less = require('gulp-less');
 var DIST = './dist';
 var SRC = './src';
 var NAME = pkg.name;
+var VERSION = process.env.VERSION || 'local-dev';
 
 gulp.task('qext', function () {
   var qext = {
     name: 'Button for navigation',
     type: 'visualization',
     description: pkg.description,
-    version: pkg.version,
+    version: VERSION,
     icon: 'align-object-center',
     preview: 'qlik-button-for-navigation.png',
     keywords: pkg.keywords,
@@ -93,22 +94,7 @@ gulp.task('zip', ['build'], function () {
   var zip = require('gulp-zip');
 
   return gulp.src(DIST + '/**/*')
-    .pipe(zip(`${NAME}_${pkg.version}.zip`))
-    .pipe(gulp.dest(DIST));
-});
-
-gulp.task('debug', ['clean', 'qext'], function () {
-  gulp.src(SRC + '/lib/less/main.less')
-    .pipe(less())
-    .pipe(concat('main.min.css'))
-    .pipe(gulp.dest(DIST + '/lib/css'));
-  return gulp.src([
-    SRC + '/**/*.json',
-    SRC + '/**/*.png',
-    SRC + '/**/*.ng.html',
-    SRC + '/**/*.js',
-    DIST + '/**/*.qext'
-  ])
+    .pipe(zip(`${NAME}_${VERSION}.zip`))
     .pipe(gulp.dest(DIST));
 });
 
