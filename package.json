@@ -1,6 +1,6 @@
 {
   "name": "qlik-button-for-navigation",
-  "version": "2.3.0",
+  "version": "0.0.1",
   "description": "Enhance your app with buttons and actions.",
   "keywords": [
     "actions",
@@ -25,7 +25,6 @@
   },
   "scripts": {
     "build": "gulp build",
-    "build:debug": "gulp debug",
     "build:zip": "gulp zip",
     "test:unit": "aw chrome -c ./test/unit/aw.config.js"
   },
