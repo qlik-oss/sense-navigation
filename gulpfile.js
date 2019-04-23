@@ -17,7 +17,7 @@ gulp.task('qext', function () {
   var qext = {
     name: 'Button for navigation',
     type: 'visualization',
-    description: pkg.description,
+    description: pkg.description + '\nVersion: ' + VERSION,
     version: VERSION,
     icon: 'align-object-center',
     preview: 'qlik-button-for-navigation.png',
