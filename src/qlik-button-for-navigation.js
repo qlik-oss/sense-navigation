@@ -11,10 +11,13 @@ define(
     'qlik',
     './properties',
     './lib/js/helpers',
-    'text!./template.ng.html',
-    'text!./popup-editunavailable.ng.html',
+    './template.ng.html',
+    './popup-editunavailable.ng.html',
     "qvangular",
-    'css!./lib/css/main.min.css'
+    './lib/css/main.min.css',
+    './lib/less/container.less',
+    './lib/less/lui-buttons.less',
+    './lib/less/main.less'
   ],
   function (qlik, props, utils, ngTemplate, popupNoEdit, qvangular) { // eslint-disable-line max-params
     'use strict';
@@ -51,11 +54,10 @@ define(
           buttonTextAlign: 'center'
         }
       },
-      snapshot: {canTakeSnapshot: false},
+      snapshot: { canTakeSnapshot: false },
       template: ngTemplate,
       controller: [
-        '$scope', '$element', function ($scope, $element) { // eslint-disable-line no-unused-vars
-
+        '$scope', '$element', function ($scope, $element) {
           function canInteract() {
             return $scope.object && $scope.object.getInteractionState() === 1;
           }
@@ -82,7 +84,6 @@ define(
           var DELAY_ACTIONS = 100;
 
           $scope.doNavigate = function () {
-
             switch ($scope.layout.props.navigationAction) {
               case 'gotoSheet':
                 $scope.gotoSheet($scope.layout.props.selectedSheet);
@@ -150,16 +151,16 @@ define(
            * @returns a promise
            */
           $scope.doAction = function () { // eslint-disable-line complexity
-
             if ($scope.layout.props && $scope.layout.props.actionItems) {
-
               var actionPromises = [];
 
               for (var i = 0; i < $scope.layout.props.actionItems.length; i++) {
-
                 var actionType = $scope.layout.props.actionItems[i].actionType;
                 var state = $scope.layout.qStateName;
-                var fld = (utils.isEmpty($scope.layout.props.actionItems[i].selectedField) || $scope.layout.props.actionItems[i].selectedField === 'by-expr') ? $scope.layout.props.actionItems[i].field : $scope.layout.props.actionItems[i].selectedField;
+                var fld = (utils.isEmpty($scope.layout.props.actionItems[i].selectedField)
+                  || $scope.layout.props.actionItems[i].selectedField === 'by-expr')
+                  ? $scope.layout.props.actionItems[i].field
+                  : $scope.layout.props.actionItems[i].selectedField;
                 var val = $scope.layout.props.actionItems[i].value;
                 var softLock = $scope.layout.props.actionItems[i].softLock;
                 var bookmark = $scope.layout.props.actionItems[i].selectedBookmark;
@@ -274,7 +275,6 @@ define(
               return actionPromises.reduce(function (a, b) {
                 return a.then(b);
               }, seed);
-
             }
           };
 

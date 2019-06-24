@@ -2,9 +2,8 @@
 define([
   'qlik',
   './lib/js/helpers',
-  'text!./lib/data/icons-lui.json'
+  './lib/data/icons-lui.json'
 ], function (qlik, utils, iconListLui) { // eslint-disable-line max-params
-
   'use strict';
 
   // ****************************************************************************************
@@ -14,7 +13,7 @@ define([
   // Helper method to return a list of icons in a format that can be used by the
   // dropdown component.
   function getIcons(iconListRaw) {
-    var iconList = JSON.parse(iconListRaw).icons;
+    var iconList = iconListRaw.icons;
     var propDef = [];
 
     iconList.forEach(function (icon) {
@@ -282,7 +281,7 @@ define([
     label: 'Select sheet',
     ref: 'props.selectedSheet',
     options: function() {
-      return utils.getPPList({listType: 'sheet', sortBy: 'title'});
+      return utils.getPPList({ listType: 'sheet', sortBy: 'title' });
     },
     show: function (data) {
       return data.props.navigationAction === 'gotoSheet';
@@ -295,7 +294,7 @@ define([
     label: 'Select story',
     ref: 'props.selectedStory',
     options: function() {
-      return utils.getPPList({listType: 'story', sortBy: 'title'});
+      return utils.getPPList({ listType: 'story', sortBy: 'title' });
     },
     show: function (data) {
       return data.props.navigationAction === 'gotoStory';
@@ -460,11 +459,34 @@ define([
   // n-actions
   // ****************************************************************************************
   var bookmarkEnabler = ['applyBookmark'];
-  var fieldEnabler = ['clearField', 'clearOther', 'lockField', 'selectAll', 'selectAlternative', 'selectExcluded', 'selectField', 'selectPossible', 'selectValues', 'selectAndLockField', 'toggleSelect', 'unlockField'];
-  var valueEnabler = ['selectField', 'selectValues', 'setVariable', 'selectAndLockField', 'toggleSelect'];
+  var fieldEnabler = [
+    'clearField',
+    'clearOther',
+    'lockField',
+    'selectAll',
+    'selectAlternative',
+    'selectExcluded',
+    'selectField',
+    'selectPossible',
+    'selectValues',
+    'selectAndLockField',
+    'toggleSelect',
+    'unlockField'];
+  var valueEnabler = [
+    'selectField',
+    'selectValues',
+    'setVariable',
+    'selectAndLockField',
+    'toggleSelect'];
   var valueDescEnabler = ['selectValues'];
   var variableEnabler = ['setVariable'];
-  var overwriteLockedEnabler = ['clearOther', 'selectAll', 'selectAlternative', 'selectExcluded', 'selectPossible', 'toggleSelect'];
+  var overwriteLockedEnabler = [
+    'clearOther',
+    'selectAll',
+    'selectAlternative',
+    'selectExcluded',
+    'selectPossible',
+    'toggleSelect'];
 
   var actionsList = {
     type: 'array',
@@ -584,8 +606,8 @@ define([
             defaultValue: false
           },
           details: {
-						show: false
-					}
+            show: false
+          }
         }
       }
     }
@@ -659,7 +681,8 @@ define([
         component: 'text'
       },
       paragraph2: {
-        label: 'Button for navigation is based upon an extension created by Stefan Walther at QlikTech International AB.',
+        label: `Button for navigation is based upon an extension created by Stefan Walther at 
+          likTech International AB.`,
         component: 'text'
       }
     }

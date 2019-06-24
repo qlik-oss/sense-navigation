@@ -1,8 +1,6 @@
 /* global define */
 define(['qlik', 'encoder'], function (qlik, encoder) {
-
   var Utils = {
-
     /**
      * Split a string with a list of number, delimited by a separator and return and array of numbers.
      * @param {string} str - The string to parse.
@@ -66,7 +64,6 @@ define(['qlik', 'encoder'], function (qlik, encoder) {
      * @returns {promise.Promise} - Returns a promise to a list of apps.
      */
     getAppList: function () {
-
       var promise = qlik.Promise;
 
       qlik.getGlobal().getAppList(function (items) {
@@ -94,7 +91,6 @@ define(['qlik', 'encoder'], function (qlik, encoder) {
       }
 
       app.getAppObjectList(function (data) {
-
         var sortedData = data.qAppObjectList.qItems.sort(function (a, b) {
           return a.qData.rank - b.qData.rank;
         });
@@ -175,7 +171,6 @@ define(['qlik', 'encoder'], function (qlik, encoder) {
       }
 
       app.getList('FieldList', function (items) {
-
         defer.resolve(items.qFieldList.qItems.map(function (item) {
           return {
             value: item.qName,
