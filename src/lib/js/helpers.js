@@ -25,11 +25,7 @@ define(['qlik', 'encoder'], function (qlik, encoder) {
      * @returns {string} - The fixed url.
      */
     fixUrl: function (url) {
-      url = encoder.encodeForHref(url);
-      if (/(https?|mailto):\/\//.test(url)) {
-        return url;
-      }
-      return 'http://' + url;
+      return encoder.encodeForHref(url);
     },
 
     /**
