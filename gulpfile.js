@@ -27,12 +27,6 @@ gulp.task('qext', function () {
     homepage: pkg.homepage,
     license: pkg.license,
     repository: '',
-    installer: 'QlikExtensionBundler',
-    bundle: {
-      id: 'qlik-dashboard-bundle',
-      name: 'Dashboard bundle',
-      description: 'This is a set of extensions that will facilitate dashboard creation in Qlik Sense: A navigation button, a date picker, a slider, and two different container objects. These can be used in addition to the native objects found under "Charts".\n\nFor limitations and support conditions, see the documentation.'
-    },
     dependencies: {
       'qlik-sense': '>=5.5.x'
     }
