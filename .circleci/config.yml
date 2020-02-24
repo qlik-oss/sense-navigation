@@ -17,7 +17,7 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-          command: npm install --no-optional
+          command: yarn install
       - run:
           name: BlackDuck scan
           command: curl -s https://detect.synopsys.com/detect.sh | bash -s -- \
