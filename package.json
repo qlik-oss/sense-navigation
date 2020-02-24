@@ -29,7 +29,7 @@
     "test:unit": "aw chrome -c ./test/unit/aw.config.js"
   },
   "devDependencies": {
-    "after-work.js": "^4.3.2",
+    "@after-work.js/aw": "6.0.11",
     "angular": "1.7.2",
     "@babel/cli": "7.8.4",
     "@babel/core": "7.8.4",
