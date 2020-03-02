@@ -30,7 +30,7 @@ gulp.task('qext', function () {
     dependencies: {
       'qlik-sense': '>=5.5.x'
     },
-		deprecated: '2020-02-24'
+		deprecated: '2020-04-30'
   };
   if (pkg.contributors) {
     qext.contributors = pkg.contributors;
