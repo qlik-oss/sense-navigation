@@ -79,7 +79,7 @@ define(
             $element.find('button').bind(clickHandler, $scope.doClick);
           }
 
-          var DELAY_ACTIONS = 100;
+          var DELAY_ACTIONS = 10;
 
           $scope.doNavigate = function () {
 
@@ -223,7 +223,7 @@ define(
                   case 'selectAndLockField':
                     if (!utils.isEmpty(fld) && (!utils.isEmpty(val))) {
                       actionPromises.push($scope.actions.selectField.bind(this, fld, state, val));
-                      actionPromises.push($scope.actions.wait.bind(null, 100));
+                      actionPromises.push($scope.actions.wait.bind(null));
                       actionPromises.push($scope.actions.lockField.bind(this, fld, state));
                     }
                     break;
@@ -262,7 +262,7 @@ define(
                     break;
                   case 'unlockAllAndClearAll':
                     actionPromises.push($scope.actions.unlockAll.bind(this, state));
-                    actionPromises.push($scope.actions.wait.bind(null, 100));
+                    actionPromises.push($scope.actions.wait.bind(null));
                     actionPromises.push($scope.actions.clearAll.bind(this, state));
                     break;
 
@@ -271,7 +271,7 @@ define(
                 }
 
                 if (l < actionPromises.length) {
-                  actionPromises.push($scope.actions.wait.bind(null, 100));
+                  actionPromises.push($scope.actions.wait.bind(null));
                 }
               }
 
@@ -401,7 +401,7 @@ define(
               return cApp.field(field, state).unlock();
             },
             wait: function (ms) {
-              var waitMs = ms || DELAY_ACTIONS;
+              var waitMs = typeof ms === 'number' ? ms : DELAY_ACTIONS;
               return new qlik.Promise(function (resolve) {
                 var wait = setTimeout(function () {
                   clearTimeout(wait);
