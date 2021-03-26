@@ -1,9 +1,9 @@
-version: 2
+version: 2.1
 
 defaults: &defaults
   working_directory: ~/qlik-button-for-navigation
   docker:
-    - image: circleci/node:stretch
+    - image: circleci/node:10.15.3-browsers
   environment:
     GITHUB_ORG: "qlik-oss"
     GITHUB_REPO: "sense-navigation"
@@ -12,15 +12,15 @@ defaults: &defaults
 jobs:
   test:
     docker:
-    - image: circleci/node:stretch-browsers
+    - image: circleci/node:10.15.3-browsers
     steps:
       - checkout
       - run:
           name: Install dependencies
-          command: npm install
+          command: yarn install
       - run:
           name: BlackDuck scan
-          command: curl -s https://blackducksoftware.github.io/hub-detect/hub-detect.sh | bash -s -- \
+          command: curl -s https://detect.synopsys.com/detect.sh | bash -s -- \
             --blackduck.url="https://qliktech.blackducksoftware.com" \
             --blackduck.trust.cert=true \
             --blackduck.username="svc-blackduck" \

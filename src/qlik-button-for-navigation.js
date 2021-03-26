@@ -111,7 +111,12 @@ define(
                   } else if (same) {
                     target = '_self';
                   }
-                  window.open(utils.fixUrl(url), target);
+
+                  if (/(mailto:)/.test(url)) {
+                    window.location.href = url;
+                  } else {
+                    window.open(utils.fixUrl(url), target);
+                  }
                 }
                 break;
               case 'prevSheet':
