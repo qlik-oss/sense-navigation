@@ -57,6 +57,11 @@
     "requirejs": "^2.3.6",
     "requirejs-text": "^2.0.15",
     "uglify-save-license": "^0.4.1",
-    "stylelint-webpack-plugin": "2.1.1"
+    "less": "3.8.1",
+    "less-loader": "4.1.0",
+    "style-loader": "0.23.1",
+    "stylelint": "8.4.0",
+    "stylelint-webpack-plugin": "0.10.5",
+    "webpack": "4.20.2"
   }
 }
