@@ -56,6 +56,7 @@
     "request": "^2.88.0",
     "requirejs": "^2.3.6",
     "requirejs-text": "^2.0.15",
-    "uglify-save-license": "^0.4.1"
+    "uglify-save-license": "^0.4.1",
+    "stylelint-webpack-plugin": "2.1.1"
   }
 }
