@@ -1,16 +1,13 @@
 /* global require Buffer */
 var gulp = require('gulp');
-var cssnano = require('gulp-cssnano');
 var gutil = require('gulp-util');
-var uglify = require('gulp-uglify');
-var saveLicense = require('uglify-save-license');
 var pkg = require('./package.json');
-var concat = require('gulp-concat');
-var less = require('gulp-less');
 var zip = require('gulp-zip');
+var del = require('del');
+var webpackConfig = require('./webpack.config');
+var webpack = require('webpack');
 
 var DIST = './dist';
-var SRC = './src';
 var NAME = pkg.name;
 var VERSION = process.env.VERSION || 'local-dev';
 
@@ -50,58 +47,44 @@ gulp.task('qext', function () {
   return src.pipe(gulp.dest(DIST));
 });
 
-gulp.task('less', function () {
-  var LessPluginAutoPrefix = require('less-plugin-autoprefix');
-  var autoprefix = new LessPluginAutoPrefix({
-    browsers: ['last 2 versions']
-  });
-  return gulp.src(SRC + '/lib/less/main.less')
-    .pipe(less({
-      plugins: [autoprefix]
-    }))
-    .pipe(cssnano())
-    .pipe(concat('main.min.css'))
-    .pipe(gulp.dest(DIST + '/lib/css'));
-});
-
-gulp.task('clean', function (ready) {
-	var del = require('del');
-	del.sync([DIST]);
-	ready();
-});
-
-gulp.task('add-assets', function () {
-	return gulp.src([
-		SRC + '/**/*.ng.html',
-		SRC + '/**/*.png',
-		SRC + '/**/*.json'
-	]).pipe(gulp.dest(DIST));
-});
-
-gulp.task('add-src', function () {
-	return gulp.src(SRC + '/**/*.js')
-		.pipe(uglify({
-			output: {
-				comments: saveLicense
-			}
-		}))
-		.pipe(gulp.dest(DIST));
+gulp.task('clean', function () {
+  return del([DIST], { force: true });
 });
 
 gulp.task('zip-build', function () {
-	return gulp.src(DIST + '/**/*')
-		.pipe(zip(`${NAME}_${VERSION}.zip`))
-		.pipe(gulp.dest(DIST));
+  return gulp.src(DIST + '/**/*')
+    .pipe(zip(`${NAME}_${VERSION}.zip`))
+    .pipe(gulp.dest(DIST));
+});
+
+gulp.task('add-assets', function () {
+  return gulp.src('./assets/**/*').pipe(gulp.dest(DIST));
+});
+
+gulp.task('webpack-build', done => {
+  webpack(webpackConfig, (error, statistics) => {
+    const compilationErrors = statistics && statistics.compilation.errors;
+    const hasCompilationErrors = !statistics || (compilationErrors && compilationErrors.length > 0);
+
+    console.log(statistics && statistics.toString({ chunks: false, colors: true })); // eslint-disable-line no-console
+
+    if (error || hasCompilationErrors) {
+      console.log('Build has errors or eslint errors, fail it'); // eslint-disable-line no-console
+      process.exit(1);
+    }
+
+    done();
+  });
 });
 
 gulp.task('build',
-	gulp.series('clean', 'qext', 'less', 'add-assets', 'add-src')
+  gulp.series('clean', 'webpack-build', 'qext', 'add-assets')
 );
 
 gulp.task('zip',
-	gulp.series('build', 'zip-build')
+  gulp.series('build', 'zip-build')
 );
 
 gulp.task('default',
-	gulp.series('build')
+  gulp.series('build')
 );

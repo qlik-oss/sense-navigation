@@ -50,7 +50,7 @@ jobs:
           at: ~/qlik-button-for-navigation
       - run:
           name: Install dependencies
-          command: npm install
+          command: yarn install
       - run:
           name: Build and package
           command: |
